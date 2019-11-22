@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WayPoint : MonoBehaviour
 {
-    public List<WayPoint> neighbors;
+    public List<WayPoint> neighbors = new List<WayPoint>();
 
     public WayPoint previous
     {
@@ -19,7 +19,7 @@ public class WayPoint : MonoBehaviour
     }
 
 
-    void OnDrawGizmosSelected()
+    void OnDrawGizmos()
     {
         if (neighbors == null)
             return;
@@ -36,11 +36,11 @@ public class WayPoint : MonoBehaviour
 
         Gizmos.DrawSphere(transform.position, 0.1f);
     }
-    void OnDrawGizmos()
+    void OnDrawGizmosSelected()
     {
        
         
-        Gizmos.color = Color.red;
+        Gizmos.color = Color.green;
         Gizmos.DrawSphere(transform.position, 0.1f);
     }
 }

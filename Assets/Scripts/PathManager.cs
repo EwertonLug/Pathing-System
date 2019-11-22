@@ -14,7 +14,7 @@ public class PathManager : MonoBehaviour
 
 
     void Start(){
-        InvokeRepeating("Search",2,1f);
+        //InvokeRepeating("Search",2,1f);
     }
     void Search(){
         Debug.Log("Nova Busca ininicada!");
