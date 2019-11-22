@@ -13,7 +13,7 @@ public class WayPointFunction : MonoBehaviour
         way.name = "WayPoint";
         way.tag = "Waypoint";
         way.transform.SetParent(this.transform.parent);
-        way.transform.position = new Vector3(transform.position.x+2, Random.Range(0,10), 0);
+        way.transform.position = new Vector3(transform.position.x+2, Random.Range(0,5), 0);
         way.AddComponent<WayPoint>();
         way.AddComponent<WayPointFunction>();
         //Adicionando Vizinho ao WayPoint Atual
@@ -53,5 +53,7 @@ public class WayPointFunction : MonoBehaviour
         var state = this.GetComponent<WayPoint>().isWalkable;
         return state == true ? "": "Block";
     }
+   
+   
 
 }

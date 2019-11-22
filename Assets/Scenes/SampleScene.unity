@@ -487,7 +487,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 180857565}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 31.24, y: 4.83, z: 0}
+  m_LocalPosition: {x: 31.24, y: 4.84, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 948848734}
@@ -2263,7 +2263,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 578433523}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 24.61, y: -4.9, z: 0}
+  m_LocalPosition: {x: 24.63, y: -5.31, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 948848734}
@@ -2301,7 +2301,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   neighbors:
   - {fileID: 1003059917}
-  - {fileID: 0}
+  - {fileID: 1571226325}
   - {fileID: 668299477}
   isWalkable: 1
 --- !u!114 &619222970
@@ -2426,6 +2426,7 @@ MonoBehaviour:
   neighbors:
   - {fileID: 1260408201}
   - {fileID: 578433524}
+  - {fileID: 619222969}
   isWalkable: 1
 --- !u!114 &668299478
 MonoBehaviour:
@@ -2447,7 +2448,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 668299476}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 20.22, y: -4.98, z: 0}
+  m_LocalPosition: {x: 20.2, y: -5.14, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 948848734}
@@ -3459,7 +3460,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1003059916}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 24.76, y: 0.02, z: 0}
+  m_LocalPosition: {x: 24.604, y: -0.04, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 948848734}
@@ -4285,7 +4286,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1269452259}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 27.69, y: -0, z: 0}
+  m_LocalPosition: {x: 27.551, y: -0.089999914, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 948848734}
@@ -4697,7 +4698,7 @@ GameObject:
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
-  m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -4714,6 +4715,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkSpeed: 3
+  currentWaypointPosition: {x: 0, y: 0, z: 0}
+  nextWayPoint: {x: 0, y: 0, z: 0}
   target: {fileID: 1962194798}
 --- !u!4 &1325754007
 Transform:
@@ -5161,6 +5164,7 @@ MonoBehaviour:
   neighbors:
   - {fileID: 578433524}
   - {fileID: 497108126}
+  - {fileID: 1269452260}
   isWalkable: 1
 --- !u!114 &1481152172
 MonoBehaviour:
@@ -5182,7 +5186,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1481152170}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 28.65, y: -4.89, z: 0}
+  m_LocalPosition: {x: 28.669998, y: -5.29, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 948848734}
@@ -5410,6 +5414,7 @@ MonoBehaviour:
   neighbors:
   - {fileID: 1880625303}
   - {fileID: 619222969}
+  - {fileID: 0}
   - {fileID: 0}
   isWalkable: 1
 --- !u!114 &1571226326
@@ -5983,7 +5988,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1696876483}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 33.87, y: 4.86, z: 0}
+  m_LocalPosition: {x: 33.87, y: 4.8700004, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 948848734}
@@ -6115,7 +6120,7 @@ MonoBehaviour:
   neighbors:
   - {fileID: 721345182}
   - {fileID: 1983044142}
-  - {fileID: 1983044142}
+  - {fileID: 1880625303}
   isWalkable: 1
 --- !u!114 &1830124928
 MonoBehaviour:
@@ -6137,7 +6142,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1830124926}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 13.37, y: -3.28, z: 0}
+  m_LocalPosition: {x: 12.77, y: -3.18, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 948848734}
@@ -6306,6 +6311,7 @@ MonoBehaviour:
   - {fileID: 1989117330}
   - {fileID: 1571226325}
   - {fileID: 1830124927}
+  - {fileID: 0}
   isWalkable: 1
 --- !u!114 &1880625304
 MonoBehaviour:
@@ -6862,7 +6868,7 @@ GameObject:
   m_Layer: 0
   m_Name: Target
   m_TagString: Untagged
-  m_Icon: {fileID: 3306451490063965843, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -6973,6 +6979,9 @@ MonoBehaviour:
   neighbors:
   - {fileID: 2079085620}
   - {fileID: 1880625303}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   isWalkable: 1
 --- !u!114 &1989117331
 MonoBehaviour:
@@ -6994,7 +7003,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1989117329}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 10.14, y: 4.82, z: 0}
+  m_LocalPosition: {x: 10.11, y: 4.82, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 948848734}

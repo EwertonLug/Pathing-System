@@ -8,7 +8,8 @@ public class PathManager : MonoBehaviour
     public float walkSpeed = 5.0f;
 
     private Stack<Vector3> currentPath;
-    private Vector3 currentWaypointPosition;
+    public Vector3 currentWaypointPosition;
+    public Vector3 nextWayPoint;
     private float moveTimeTotal;
     private float moveTimeCurrent;
     public Transform target;
@@ -56,7 +57,7 @@ public class PathManager : MonoBehaviour
                 neighbor.previous = currentNode;
                 neighbor.distance = dist + (neighbor.transform.position - currentNode.transform.position).magnitude;
                 var distanceToTarget = (neighbor.transform.position - endNode.transform.position).magnitude;
-                Debug.Log(neighbor.gameObject.name + " Distance: " + neighbor.distance + distanceToTarget);
+            
 
 
                 if (!openList.ContainsKey(neighbor.distance + distanceToTarget))
@@ -93,12 +94,13 @@ public class PathManager : MonoBehaviour
         }
         if (currentPath != null && currentPath.Count > 0)
         {
+            nextWayPoint = currentPath.Peek();
             if (moveTimeCurrent < moveTimeTotal)
             {
                 moveTimeCurrent += Time.deltaTime;
                 if (moveTimeCurrent > moveTimeTotal)
                     moveTimeCurrent = moveTimeTotal;
-                transform.position = Vector3.Lerp(currentWaypointPosition, currentPath.Peek(), moveTimeCurrent / moveTimeTotal);
+                OnMove();
             }
             else
             {
@@ -111,6 +113,11 @@ public class PathManager : MonoBehaviour
                     moveTimeTotal = (currentWaypointPosition - currentPath.Peek()).magnitude / walkSpeed;
                 }
             }
+        }
+        if(nextWayPoint.y > currentWaypointPosition.y+0.5f){
+          OnJump();
+        }else{
+          OnDwon();
         }
     }
 
@@ -132,6 +139,17 @@ public class PathManager : MonoBehaviour
             return closest.GetComponent<WayPoint>();
         }
         return null;
+    }
+    public void OnMove(){
+          transform.position = Vector3.Lerp(currentWaypointPosition, currentPath.Peek(), moveTimeCurrent / moveTimeTotal);
+    }
+    public void  OnJump(){
+         Debug.Log("Pulcar");
+        transform.GetChild(0).GetComponent<SpriteRenderer>().flipY = true;
+    }
+    public void OnDwon(){
+        Debug.Log("Descer");
+        transform.GetChild(0).GetComponent<SpriteRenderer>().flipY = false;
     }
 
 }

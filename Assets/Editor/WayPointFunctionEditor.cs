@@ -6,6 +6,7 @@ using UnityEditor;
 [CustomEditor(typeof(WayPointFunction))]
 public class WayPointFunctionEditor : Editor
 {
+
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector();
@@ -23,10 +24,9 @@ public class WayPointFunctionEditor : Editor
         GUIStyle style = new GUIStyle();
         style.normal.textColor = Color.white;
         style.fontStyle = FontStyle.Bold;
-
-     
-        Handles.Label(myScript.gameObject.transform.position, "Selected", style);
-
+        Handles.Label(myScript.transform.position, "Selected", style);
+      
     }
+   
 
 }
