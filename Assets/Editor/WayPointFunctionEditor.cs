@@ -11,9 +11,22 @@ public class WayPointFunctionEditor : Editor
         DrawDefaultInspector();
 
         WayPointFunction myScript = (WayPointFunction)target;
-        if(GUILayout.Button("Create Neighbor "))
+        if (GUILayout.Button("Create Neighbor "))
         {
             myScript.CreateNeighbor();
         }
     }
+    void OnSceneGUI()
+    {
+        WayPointFunction myScript = (WayPointFunction)target;
+        myScript.UpdateStateWayPoint();
+        GUIStyle style = new GUIStyle();
+        style.normal.textColor = Color.white;
+        style.fontStyle = FontStyle.Bold;
+
+     
+        Handles.Label(myScript.gameObject.transform.position, "Selected", style);
+
+    }
+
 }

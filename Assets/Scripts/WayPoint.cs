@@ -5,7 +5,7 @@ using UnityEngine;
 public class WayPoint : MonoBehaviour
 {
     public List<WayPoint> neighbors = new List<WayPoint>();
-
+    public bool isWalkable = true;
     public WayPoint previous
     {
         get;
@@ -19,11 +19,29 @@ public class WayPoint : MonoBehaviour
     }
 
 
-    void OnDrawGizmos()
+ 
+    void OnDrawGizmosSelected()
     {
-        if (neighbors == null)
-            return;
+       
         Gizmos.color = Color.red;
+        Gizmos.DrawSphere(transform.position, 0.15f);
+         foreach (var neighbor in neighbors)
+        {
+            if (neighbor != null)
+            {
+               
+              
+                Gizmos.DrawSphere(neighbor.transform.position, 0.15f);
+            }
+        }
+      
+      
+    }
+       void OnDrawGizmos()
+    {   
+        if (neighbors == null )
+            return;
+        Gizmos.color = Color.green;
         foreach (var neighbor in neighbors)
         {
             if (neighbor != null)
@@ -33,14 +51,8 @@ public class WayPoint : MonoBehaviour
                 Gizmos.DrawSphere(neighbor.transform.position, 0.1f);
             }
         }
+     
 
-        Gizmos.DrawSphere(transform.position, 0.1f);
-    }
-    void OnDrawGizmosSelected()
-    {
-       
-        
-        Gizmos.color = Color.green;
         Gizmos.DrawSphere(transform.position, 0.1f);
     }
 }
