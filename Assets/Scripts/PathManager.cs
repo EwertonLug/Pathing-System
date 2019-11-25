@@ -15,6 +15,7 @@ public enum IAState
 public class PathManager : MonoBehaviour
 {
     public float walkSpeed = 5.0f;
+    public float jumpForce = 5f;
 
     private Stack<Vector3> currentPath;
     public Vector3 currentWaypointPosition;
@@ -26,6 +27,7 @@ public class PathManager : MonoBehaviour
     public int frequencyPerWayPoints;
     int currentFrequency = 0;
     public IAState STATE;
+
     void Start()
     {
         //InvokeRepeating("Search", 2, 5f);
@@ -99,7 +101,7 @@ public class PathManager : MonoBehaviour
 
     }
 
-    void Update()
+    void FixedUpdate()
     {
 
         if (currentPath != null && currentPath.Count > 0)
@@ -107,10 +109,13 @@ public class PathManager : MonoBehaviour
             nextWayPoint = currentPath.Peek();
             if (moveTimeCurrent < moveTimeTotal)
             {
+
                 moveTimeCurrent += Time.deltaTime;
+
                 if (moveTimeCurrent > moveTimeTotal)
                     moveTimeCurrent = moveTimeTotal;
                 OnMove();
+
             }
             else
             {
@@ -118,7 +123,7 @@ public class PathManager : MonoBehaviour
                 if (currentPath.Count == 0)
                 {
                     Stop();
-                  
+
                 }
                 else
                 {
@@ -142,87 +147,140 @@ public class PathManager : MonoBehaviour
         {
             OnDrop();
         }
-        else if (nextWayPoint == currentWaypointPosition){
-           
-            OnIdle();
-            
-           
+        else if (nextWayPoint == currentWaypointPosition)
+        {
 
-        }else{
-           
+            OnIdle();
+
+
+
+        }
+        else
+        {
+
             STATE = IAState.WALK;
         }
         //
-         if (nextWayPoint.x > currentWaypointPosition.x + 0.5f)
+        if (nextWayPoint.x > currentWaypointPosition.x + 0.5f)
         {
             GetComponent<SpriteRenderer>().flipX = false;
         }
-        else if (nextWayPoint.x<currentWaypointPosition.x - 0.5f)
+        else if (nextWayPoint.x < currentWaypointPosition.x - 0.5f)
         {
             GetComponent<SpriteRenderer>().flipX = true;
         }
         if (currentFrequency > frequencyPerWayPoints)
         {
             Search();
-currentFrequency = 0;
+            currentFrequency = 0;
         }
         switch (STATE)
         {
             case IAState.WALK:
-             GetComponent<Animator>().Play("enemy-walk");
-            break;
+                GetComponent<Animator>().Play("enemy-walk");
+                jump = 0;
+                break;
             case IAState.JUMP:
-             GetComponent<Animator>().Play("enemy-jump-in");
-            break;
+                GetComponent<Animator>().Play("enemy-jump-in");
+                break;
             case IAState.DROP:
-             GetComponent<Animator>().Play("enemy-jump-out");
-            break;
-             case IAState.IDLE:
-             GetComponent<Animator>().Play("enemy-idle");
-            break;
-           
+                GetComponent<Animator>().Play("enemy-jump-out");
+                break;
+            case IAState.IDLE:
+                GetComponent<Animator>().Play("enemy-idle");
+                jump = 0;
+                break;
+
         }
 
     }
 
     private WayPoint FindClosestWaypoint(Vector3 target)
-{
-    GameObject closest = null;
-    float closestDist = Mathf.Infinity;
-    foreach (var waypoint in GameObject.FindGameObjectsWithTag("Waypoint"))
     {
-        var dist = (waypoint.transform.position - target).magnitude;
-        if (dist < closestDist)
+        GameObject closest = null;
+        float closestDist = Mathf.Infinity;
+        foreach (var waypoint in GameObject.FindGameObjectsWithTag("Waypoint"))
         {
-            closest = waypoint;
-            closestDist = dist;
+            var dist = (waypoint.transform.position - target).magnitude;
+            if (dist < closestDist)
+            {
+                closest = waypoint;
+                closestDist = dist;
+            }
         }
+        if (closest != null)
+        {
+            return closest.GetComponent<WayPoint>();
+        }
+        return null;
     }
-    if (closest != null)
+    public void OnMove()
     {
-        return closest.GetComponent<WayPoint>();
+
+        if (STATE != IAState.JUMP && STATE != IAState.DROP)
+        {
+            transform.parent.position = Vector3.Lerp(currentWaypointPosition, currentPath.Peek(), moveTimeCurrent / moveTimeTotal);
+            Debug.DrawLine(transform.parent.position, nextWayPoint);//Direção
+        }
+
+
     }
-    return null;
-}
-public void OnMove()
-{
+    int jump = 0;
+    public void OnJump()
+    {
 
-    transform.parent.position = Vector3.Lerp(currentWaypointPosition, currentPath.Peek(), moveTimeCurrent / moveTimeTotal);
-}
-public void OnJump()
-{
-    STATE = IAState.JUMP;
+        STATE = IAState.JUMP;
+       
+        List<Vector3> bizierCurve = BizierCurve(currentWaypointPosition,new Vector3(currentWaypointPosition.x, currentWaypointPosition.y+10,0), nextWayPoint, 10);
+      
+      if(jump == 0){
+          currentPath.Clear();
+          for (int i = 0; i < bizierCurve.Count; i++)
+        {
+              Debug.DrawLine(currentWaypointPosition, bizierCurve[i]);//Direção
+              currentPath.Push(bizierCurve[i]);
+              
+        }
+        jump++;
+      }
+        
+         transform.parent.position = Vector3.Lerp(currentWaypointPosition, currentPath.Peek(), moveTimeCurrent / moveTimeTotal);
+        
 
 
-}
-public void OnDrop()
-{
-    STATE = IAState.DROP;
+    }
 
-}
-public void OnIdle()
-{
-    STATE = IAState.IDLE;
-}
+    public void OnDrop()
+    {
+        STATE = IAState.DROP;
+
+        transform.parent.position = Vector3.Lerp(currentWaypointPosition, currentPath.Peek(), moveTimeCurrent / moveTimeTotal);
+    }
+    public void OnIdle()
+    {
+        STATE = IAState.IDLE;
+    }
+    public List<Vector3> BizierCurve(Vector3 current, Vector3 middle, Vector3 next, float numberOfPoints)
+    {
+        List<Vector3> path = new List<Vector3>();
+     
+        // set points of quadratic Bezier curve
+        Vector3 p0 = current;
+        Vector3 p1 = middle;
+        Vector3 p2 = next;
+        float t;
+        Vector3 position;
+        for (int i = 0; i < numberOfPoints; i++)
+        {
+            t = i / (numberOfPoints - 1.0f);
+            position = (1.0f - t) * (1.0f - t) * p0
+            + 2.0f * (1.0f - t) * t * p1 + t * t * p2;
+          
+            path.Add(position);
+        }
+        return path;
+    }
+
+
 
 }
