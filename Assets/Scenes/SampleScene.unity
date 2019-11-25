@@ -2955,7 +2955,7 @@ MonoBehaviour:
   currentWaypointPosition: {x: 0, y: 0, z: 0}
   nextWayPoint: {x: 0, y: 0, z: 0}
   target: {fileID: 1962194798}
-  frequencyPerWayPoints: 2
+  frequencyPerWayPoints: 10
   STATE: 2
 --- !u!1 &835668625
 GameObject:
@@ -4298,7 +4298,7 @@ Rigidbody2D:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1182728593}
   m_BodyType: 0
-  m_Simulated: 1
+  m_Simulated: 0
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
@@ -4317,7 +4317,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1182728593}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0

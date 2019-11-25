@@ -110,11 +110,15 @@ public class PathManager : MonoBehaviour
             if (moveTimeCurrent < moveTimeTotal)
             {
 
+
                 moveTimeCurrent += Time.deltaTime;
 
                 if (moveTimeCurrent > moveTimeTotal)
                     moveTimeCurrent = moveTimeTotal;
+
                 OnMove();
+
+
 
             }
             else
@@ -226,27 +230,62 @@ public class PathManager : MonoBehaviour
 
     }
     int jump = 0;
+    Stack<Vector3> pathCurve;
     public void OnJump()
     {
 
         STATE = IAState.JUMP;
-       
-        List<Vector3> bizierCurve = BizierCurve(currentWaypointPosition,new Vector3(currentWaypointPosition.x, currentWaypointPosition.y+10,0), nextWayPoint, 10);
-      
-      if(jump == 0){
-          currentPath.Clear();
-          for (int i = 0; i < bizierCurve.Count; i++)
-        {
-              Debug.DrawLine(currentWaypointPosition, bizierCurve[i]);//Direção
-              currentPath.Push(bizierCurve[i]);
-              
-        }
-        jump++;
-      }
-        
-         transform.parent.position = Vector3.Lerp(currentWaypointPosition, currentPath.Peek(), moveTimeCurrent / moveTimeTotal);
-        
 
+
+
+        if (jump == 0)
+        {
+            List<Vector3> bizierCurve = BizierCurve(currentWaypointPosition, new Vector3(currentWaypointPosition.x, currentWaypointPosition.y + 10, 0), nextWayPoint, 20);
+            pathCurve = new Stack<Vector3>();
+            StartCoroutine(WalkCurve());
+            for (int i = 1; i < bizierCurve.Count; i++)
+            {
+                Debug.DrawLine(bizierCurve[i - 1], bizierCurve[i]);//Direção
+                pathCurve.Push(bizierCurve[i]);
+
+            }
+            jump++;
+
+        }
+
+
+
+
+
+        //Debug
+        for (int i = 1; i < currentPath.Count; i++)
+        {
+            Debug.DrawLine(currentPath.ToArray()[i - 1], currentPath.ToArray()[i]);//Direção
+
+
+        }
+
+
+    }
+
+    IEnumerator WalkCurve()
+    {
+
+        while (true)
+        {
+
+
+            for (int i = 0; i < pathCurve.Count; i++)
+            {
+                Debug.Log(pathCurve.ToArray()[i]);
+                yield return new WaitForSeconds(0.1f);
+
+                transform.parent.position = pathCurve.ToArray()[pathCurve.Count-i-1];
+
+
+            }
+            yield return null;
+        }
 
     }
 
@@ -263,7 +302,7 @@ public class PathManager : MonoBehaviour
     public List<Vector3> BizierCurve(Vector3 current, Vector3 middle, Vector3 next, float numberOfPoints)
     {
         List<Vector3> path = new List<Vector3>();
-     
+
         // set points of quadratic Bezier curve
         Vector3 p0 = current;
         Vector3 p1 = middle;
@@ -275,12 +314,13 @@ public class PathManager : MonoBehaviour
             t = i / (numberOfPoints - 1.0f);
             position = (1.0f - t) * (1.0f - t) * p0
             + 2.0f * (1.0f - t) * t * p1 + t * t * p2;
-          
+
             path.Add(position);
         }
         return path;
     }
 
-
-
 }
+
+
+
