@@ -18,6 +18,7 @@ public class PathManager : MonoBehaviour
     public float jumpForce = 5f;
 
     private Stack<Vector3> currentPath;
+    public List<Vector3> bizierCurve;
     public Vector3 currentWaypointPosition;
     public Vector3 nextWayPoint;
     private float moveTimeTotal;
@@ -98,28 +99,22 @@ public class PathManager : MonoBehaviour
         currentPath = null;
         moveTimeTotal = 0;
         moveTimeCurrent = 0;
-
     }
 
     void FixedUpdate()
     {
-
+        DebugCurve();
         if (currentPath != null && currentPath.Count > 0)
         {
             nextWayPoint = currentPath.Peek();
             if (moveTimeCurrent < moveTimeTotal)
             {
-
-
                 moveTimeCurrent += Time.deltaTime;
 
                 if (moveTimeCurrent > moveTimeTotal)
                     moveTimeCurrent = moveTimeTotal;
 
                 OnMove();
-
-
-
             }
             else
             {
@@ -155,9 +150,6 @@ public class PathManager : MonoBehaviour
         {
 
             OnIdle();
-
-
-
         }
         else
         {
@@ -183,18 +175,21 @@ public class PathManager : MonoBehaviour
             case IAState.WALK:
                 GetComponent<Animator>().Play("enemy-walk");
                 jump = 0;
+                drop = 0;
                 break;
             case IAState.JUMP:
                 GetComponent<Animator>().Play("enemy-jump-in");
+                drop = 0;
                 break;
             case IAState.DROP:
                 GetComponent<Animator>().Play("enemy-jump-out");
+                jump = 0;
                 break;
             case IAState.IDLE:
                 GetComponent<Animator>().Play("enemy-idle");
                 jump = 0;
+                drop = 0;
                 break;
-
         }
 
     }
@@ -221,79 +216,68 @@ public class PathManager : MonoBehaviour
     public void OnMove()
     {
 
-        if (STATE != IAState.JUMP && STATE != IAState.DROP)
-        {
-            transform.parent.position = Vector3.Lerp(currentWaypointPosition, currentPath.Peek(), moveTimeCurrent / moveTimeTotal);
-            Debug.DrawLine(transform.parent.position, nextWayPoint);//Direção
-        }
-
-
+      
+        transform.parent.position = Vector3.Lerp(currentWaypointPosition, currentPath.Peek(), moveTimeCurrent / moveTimeTotal);
+        Debug.DrawLine(transform.parent.position, currentPath.Peek());//Direção
+        
     }
     int jump = 0;
-    Stack<Vector3> pathCurve;
+
     public void OnJump()
     {
 
         STATE = IAState.JUMP;
 
-
-
         if (jump == 0)
         {
-            List<Vector3> bizierCurve = BizierCurve(currentWaypointPosition, new Vector3(currentWaypointPosition.x, currentWaypointPosition.y + 10, 0), nextWayPoint, 20);
-            pathCurve = new Stack<Vector3>();
-            StartCoroutine(WalkCurve());
-            for (int i = 1; i < bizierCurve.Count; i++)
+            bizierCurve.Clear();
+          
+            bizierCurve = BizierCurve(currentWaypointPosition, new Vector3(currentWaypointPosition.x, currentWaypointPosition.y + 10, 0), nextWayPoint, 10);
+
+
+            for (int i = 0; i < bizierCurve.Count; i++)
             {
-                Debug.DrawLine(bizierCurve[i - 1], bizierCurve[i]);//Direção
-                pathCurve.Push(bizierCurve[i]);
+
+                //currentPath.Push(bizierCurve[bizierCurve.Count-i-1]);
 
             }
             jump++;
+                
 
-        }
-
-
-
-
-
-        //Debug
-        for (int i = 1; i < currentPath.Count; i++)
-        {
-            Debug.DrawLine(currentPath.ToArray()[i - 1], currentPath.ToArray()[i]);//Direção
-
-
-        }
-
+        }     
 
     }
 
-    IEnumerator WalkCurve()
-    {
-
-        while (true)
-        {
-
-
-            for (int i = 0; i < pathCurve.Count; i++)
-            {
-                Debug.Log(pathCurve.ToArray()[i]);
-                yield return new WaitForSeconds(0.1f);
-
-                transform.parent.position = pathCurve.ToArray()[pathCurve.Count-i-1];
-
-
-            }
-            yield return null;
-        }
-
-    }
-
+   
+    int drop = 0;
     public void OnDrop()
     {
         STATE = IAState.DROP;
 
-        transform.parent.position = Vector3.Lerp(currentWaypointPosition, currentPath.Peek(), moveTimeCurrent / moveTimeTotal);
+        if (drop == 0)
+        {
+            bizierCurve.Clear();
+            
+            bizierCurve = BizierCurve(currentWaypointPosition, new Vector3(currentWaypointPosition.x, nextWayPoint.y + 10, 0), nextWayPoint, 10);
+
+
+            for (int i = 0; i < bizierCurve.Count; i++)
+            {
+
+                //currentPath.Push(bizierCurve[i]);
+
+            }
+            drop++;   
+
+        }
+  
+    }
+     IEnumerator WalkCurve()
+    {
+
+            yield return new WaitForSeconds(0.1f);
+            transform.parent.position = Vector3.Lerp(currentWaypointPosition, currentPath.Peek(), moveTimeCurrent / moveTimeTotal);
+
     }
     public void OnIdle()
     {
@@ -318,6 +302,16 @@ public class PathManager : MonoBehaviour
             path.Add(position);
         }
         return path;
+    }
+    void DebugCurve()
+    {
+        //Debug
+        for (int i = 1; i < bizierCurve.Count; i++)
+        {
+            Debug.DrawLine(bizierCurve.ToArray()[i - 1], bizierCurve.ToArray()[i]);//Direção
+
+
+        }
     }
 
 }

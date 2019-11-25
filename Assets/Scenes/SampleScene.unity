@@ -2931,9 +2931,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 802340783}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.14, y: 1.39, z: 0}
-  m_LocalScale: {x: 1.330764, y: 1.330764, z: 1.330764}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.995, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1182728594}
   m_RootOrder: 0
@@ -2952,11 +2952,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walkSpeed: 5
   jumpForce: 300
+  bizierCurve: []
   currentWaypointPosition: {x: 0, y: 0, z: 0}
   nextWayPoint: {x: 0, y: 0, z: 0}
   target: {fileID: 1962194798}
-  frequencyPerWayPoints: 10
-  STATE: 2
+  frequencyPerWayPoints: 2
+  STATE: 0
 --- !u!1 &835668625
 GameObject:
   m_ObjectHideFlags: 0
@@ -4282,7 +4283,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1182728593}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.34, y: 4.59, z: -0.11407991}
+  m_LocalPosition: {x: 5.44, y: 7.75, z: -0.11407991}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 802340786}
@@ -5207,6 +5208,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walkSpeed: 3
   jumpForce: 5
+  bizierCurve: []
   currentWaypointPosition: {x: 0, y: 0, z: 0}
   nextWayPoint: {x: 0, y: 0, z: 0}
   target: {fileID: 1962194798}
