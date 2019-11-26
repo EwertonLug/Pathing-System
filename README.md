@@ -1,6 +1,5 @@
 # Pathing-System
-Simples Sistema de Pathing para jogos de Plataforma
-
+Simples Sistema de Pathing para jogos de Plataforma 2D
 <p>Tutorial</p>
 <p>1 - Crie uma nova Cena</p>
 <p>2 - Crie um novo path "Windows/Path System/Create Init Path"</p>
