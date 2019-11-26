@@ -5,7 +5,7 @@
 [Ver video de Demostração](https://youtu.be/iqOZyLQZZC0)
 <h5>Fluxo</h5>
 <p>1 - Usuario Criar o path manualmente na cena</p>
-<p>2 - Agente(IA) usa esse path para encontrar o melhor caminho até o alvo.</p>
+<p>2 - Agente(IA) usa esse path para encontrar o melhor caminho até o alvo.(à cada "n" Waypoints percorridos)</p>
 <p>3 - O Agente sabe qual é o atual e o próximo Waypoint, com isso decide se vai pular, descer ou andar</p>
 
 <h5>Tutorial</h5>
