@@ -13,3 +13,5 @@
 <p>2 - Crie um novo path "Windows/Path System/Create Init Path"</p>
 <p>3 - Clique sobre o Waypoint criado e use a opção "Create neighbor" no "Inspector" para criar vizinhos.</p>
 <p>4 - Posicione os waypoints conforme necessário</p>
+<p>5 - Crei dois objetos na cena, um para o Agente e outro para o Alvo.</p>
+<p>6 - Adicione o script PathManager no objeto do Agente e enexe o alvo à variável.</p>
