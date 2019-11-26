@@ -38,7 +38,7 @@ public class WayPoint : MonoBehaviour
       
     }
        void OnDrawGizmos()
-    {   /*/
+    {   
         if (neighbors == null )
             return;
         Gizmos.color = Color.green;
@@ -53,6 +53,6 @@ public class WayPoint : MonoBehaviour
         }
      
 
-        Gizmos.DrawSphere(transform.position, 0.1f);*/
+        Gizmos.DrawSphere(transform.position, 0.1f);
     }
 }

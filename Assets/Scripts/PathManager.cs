@@ -19,6 +19,7 @@ public class PathManager : MonoBehaviour
 
     private Stack<Vector3> currentPath;
     public List<Vector3> bizierCurve;
+    public List<Vector3> path;
     public Vector3 currentWaypointPosition;
     public Vector3 nextWayPoint;
     private float moveTimeTotal;
@@ -28,6 +29,7 @@ public class PathManager : MonoBehaviour
     public int frequencyPerWayPoints;
     int currentFrequency = 0;
     public IAState STATE;
+    public bool pause = false;
 
     void Start()
     {
@@ -38,7 +40,11 @@ public class PathManager : MonoBehaviour
     {
         Debug.Log("Nova Busca ininicada!");
         Stop();
-        NavigateTo(target.position);
+        if (!pause)
+        {
+            NavigateTo(target.position);
+        }
+
     }
     public void NavigateTo(Vector3 destination)
     {
@@ -104,40 +110,44 @@ public class PathManager : MonoBehaviour
     void FixedUpdate()
     {
         DebugCurve();
-        if (currentPath != null && currentPath.Count > 0)
+        if (!pause)
         {
-            nextWayPoint = currentPath.Peek();
-            if (moveTimeCurrent < moveTimeTotal)
+            if (currentPath != null && currentPath.Count > 0)
             {
-                moveTimeCurrent += Time.deltaTime;
-
-                if (moveTimeCurrent > moveTimeTotal)
-                    moveTimeCurrent = moveTimeTotal;
-
-                OnMove();
-            }
-            else
-            {
-                currentWaypointPosition = currentPath.Pop();
-                if (currentPath.Count == 0)
+                nextWayPoint = currentPath.Peek();
+                if (moveTimeCurrent < moveTimeTotal)
                 {
-                    Stop();
+                    moveTimeCurrent += Time.deltaTime;
 
+                    if (moveTimeCurrent > moveTimeTotal)
+                        moveTimeCurrent = moveTimeTotal;
+
+                    OnMove();
                 }
                 else
                 {
-                    moveTimeCurrent = 0;
-                    currentFrequency++;
-                    moveTimeTotal = (currentWaypointPosition - currentPath.Peek()).magnitude / walkSpeed;
+                    currentWaypointPosition = currentPath.Pop();
+                    if (currentPath.Count == 0)
+                    {
+                        Stop();
 
+                    }
+                    else
+                    {
+                        moveTimeCurrent = 0;
+                        currentFrequency++;
+                        moveTimeTotal = (currentWaypointPosition - currentPath.Peek()).magnitude / walkSpeed;
+
+                    }
                 }
             }
-        }
-        else
-        {
-            currentFrequency = 3;
+            else
+            {
+                currentFrequency = 3;
 
-        }
+            }
+        }//Fim PAUSE
+
         if (nextWayPoint.y > currentWaypointPosition.y + 0.5f)
         {
             OnJump();
@@ -156,7 +166,7 @@ public class PathManager : MonoBehaviour
 
             STATE = IAState.WALK;
         }
-        //
+        //Girando Agente
         if (nextWayPoint.x > currentWaypointPosition.x + 0.5f)
         {
             GetComponent<SpriteRenderer>().flipX = false;
@@ -180,10 +190,12 @@ public class PathManager : MonoBehaviour
             case IAState.JUMP:
                 GetComponent<Animator>().Play("enemy-jump-in");
                 drop = 0;
+
                 break;
             case IAState.DROP:
                 GetComponent<Animator>().Play("enemy-jump-out");
                 jump = 0;
+
                 break;
             case IAState.IDLE:
                 GetComponent<Animator>().Play("enemy-idle");
@@ -216,10 +228,10 @@ public class PathManager : MonoBehaviour
     public void OnMove()
     {
 
-      
+
         transform.parent.position = Vector3.Lerp(currentWaypointPosition, currentPath.Peek(), moveTimeCurrent / moveTimeTotal);
         Debug.DrawLine(transform.parent.position, currentPath.Peek());//Direção
-        
+
     }
     int jump = 0;
 
@@ -231,24 +243,19 @@ public class PathManager : MonoBehaviour
         if (jump == 0)
         {
             bizierCurve.Clear();
-          
-            bizierCurve = BizierCurve(currentWaypointPosition, new Vector3(currentWaypointPosition.x, currentWaypointPosition.y + 10, 0), nextWayPoint, 10);
 
+            bizierCurve = BizierCurve(currentWaypointPosition, new Vector3(currentWaypointPosition.x, currentWaypointPosition.y + 10, 0), nextWayPoint, 20);
 
-            for (int i = 0; i < bizierCurve.Count; i++)
-            {
-
-                //currentPath.Push(bizierCurve[bizierCurve.Count-i-1]);
-
-            }
+            pause = true;
             jump++;
-                
+            StartCoroutine(WalkCurve());
 
-        }     
+        }
+
 
     }
 
-   
+
     int drop = 0;
     public void OnDrop()
     {
@@ -257,26 +264,50 @@ public class PathManager : MonoBehaviour
         if (drop == 0)
         {
             bizierCurve.Clear();
-            
-            bizierCurve = BizierCurve(currentWaypointPosition, new Vector3(currentWaypointPosition.x, nextWayPoint.y + 10, 0), nextWayPoint, 10);
+            float distance = Vector3.Distance(currentWaypointPosition, nextWayPoint);
+            bizierCurve = BizierCurve(currentWaypointPosition, new Vector3(currentWaypointPosition.x, nextWayPoint.y + distance*2, 0), nextWayPoint, 20);
+
+            drop++;
+            pause = true;
+            StartCoroutine(WalkCurve());
+
+        }
+    }
+
+    public Vector3 curretBizzerPosition;
+    IEnumerator WalkCurve()
+    {
+
+        while (true)
+        {
 
 
             for (int i = 0; i < bizierCurve.Count; i++)
             {
 
-                //currentPath.Push(bizierCurve[i]);
+                yield return new WaitForSeconds(0.03f);
+                if (bizierCurve.Count > 0)
+                {
+                    transform.parent.position = bizierCurve[i];
+                    curretBizzerPosition = bizierCurve[i];
+                }
 
             }
-            drop++;   
+            if (bizierCurve.Count > 0)
+            {
+                if (curretBizzerPosition == bizierCurve[bizierCurve.Count - 1])
+                {
+                    bizierCurve.Clear();
+                    pause = false;
+                    currentWaypointPosition = curretBizzerPosition;
+                    moveTimeTotal = 0;
+                    moveTimeCurrent = 0;
+                    StopCoroutine(WalkCurve());
 
+                }
+            }
+            yield return null;
         }
-  
-    }
-     IEnumerator WalkCurve()
-    {
-
-            yield return new WaitForSeconds(0.1f);
-            transform.parent.position = Vector3.Lerp(currentWaypointPosition, currentPath.Peek(), moveTimeCurrent / moveTimeTotal);
 
     }
     public void OnIdle()
