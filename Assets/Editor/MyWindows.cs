@@ -29,7 +29,11 @@ public class MyWindows : EditorWindow
         window.Show();
 
     }
-
+    [MenuItem("Window/Path System/Join WayPoints")]
+    static void JoinWayPoints(){
+        SelectionCreate ways = new SelectionCreate();
+        ways.Join();
+    }
 }
 public class CreateGridPathWindowns : EditorWindow
 {

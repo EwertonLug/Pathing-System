@@ -23,15 +23,17 @@ public class WayPoint : MonoBehaviour
     void OnDrawGizmosSelected()
     {
        
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere(transform.position, 0.15f);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawSphere(transform.position, 0.2f);
+      
          foreach (var neighbor in neighbors)
         {
             if (neighbor != null)
             {
                
                Gizmos.DrawLine(transform.position, neighbor.transform.position);
-               Gizmos.DrawSphere(neighbor.transform.position, 0.15f);
+               Gizmos.DrawSphere(neighbor.transform.position, 0.2f);
+             
             }
         }
       
@@ -42,6 +44,7 @@ public class WayPoint : MonoBehaviour
         if (neighbors == null )
             return;
         Gizmos.color = Color.green;
+      
         foreach (var neighbor in neighbors)
         {
             if (neighbor != null)
@@ -49,6 +52,7 @@ public class WayPoint : MonoBehaviour
                 Gizmos.DrawLine(transform.position, neighbor.transform.position);
 
                 Gizmos.DrawSphere(neighbor.transform.position, 0.1f);
+               
             }
         }
      
