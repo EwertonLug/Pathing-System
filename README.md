@@ -1,5 +1,4 @@
-# Pathing-System
-Simples Sistema de Pathing para jogos de Plataforma 2D
+# Pathing-System - Simples Sistema de Pathing para jogos de Plataforma 2D
 ![](https://github.com/EwertonLug/Pathing-System/blob/master/Assets/Images/bg.png)
 <h5>Fluxo</h5>
 <p>1 - Usuario Criar o path manualmente na cena</p>
