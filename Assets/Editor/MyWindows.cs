@@ -63,8 +63,11 @@ public class CreateGridPathWindowns : EditorWindow
     }
     static void CreateGridPath()
     {
-        GameObject newPath = new GameObject();
-        newPath.name = name;
+        GameObject newGrade = new GameObject();
+        newGrade.name = name;
+        newGrade.AddComponent<Grade>();
+        Grade grade = newGrade.GetComponent<Grade>();
+       
         for (int x = 0; x < whith; x++)
         {
             for (int y = 0; y < heigth; y++)
@@ -73,11 +76,26 @@ public class CreateGridPathWindowns : EditorWindow
                 float posX = x * offset;
                 float posY = y * offset;
                 float posZ = 0;
-
-                CreateWayPoint(newPath, new Vector3(posX, posY, posZ));
+               grade.nodes.Add(CreateNode(new Vector3(posX, posY, posZ)));
+                
             }
         }
-        FillNeighbors(newPath.transform);
+        FillNeighborsNode(grade);
+    }
+    static Node CreateNode(Vector3 position)
+    {
+
+        Node node = new Node();
+        node.position = position;
+        return node;
+        //grade.nodes.Add(node);
+       // way.name = "Node";
+       // way.tag = "Node";
+        //way.transform.SetParent(parent.transform);
+        //way.AddComponent<WayPoint>();
+        //way.AddComponent<WayPointFunction>();
+       // way.transform.position = position;
+        //way.transform.name = position.x.ToString() + " " + position.y.ToString();
     }
     static void CreateWayPoint(GameObject parent, Vector3 position)
     {
@@ -91,7 +109,7 @@ public class CreateGridPathWindowns : EditorWindow
         way.transform.position = position;
         way.transform.name = position.x.ToString() + " " + position.y.ToString();
     }
-    static void FillNeighbors(Transform path_root)
+    static void FillNeighborsWayPoint(Transform path_root)
     {
         int count = path_root.childCount;
         for (int i = 0; i < count; i++)
@@ -115,6 +133,30 @@ public class CreateGridPathWindowns : EditorWindow
             }
         }
     }
+       static void FillNeighborsNode(Grade grade)
+    {
+        int count = grade.nodes.Count;
+        for (int i = 0; i < count; i++)
+        {
+            Node check = grade.nodes[i];
+           
+            Vector2 currentPosition = check.position;
+            FindNeighborNode(check, grade, currentPosition.x + offset, currentPosition.y);
+            FindNeighborNode(check, grade, currentPosition.x - offset, currentPosition.y);
+            FindNeighborNode(check, grade, currentPosition.x, currentPosition.y + offset);
+            FindNeighborNode(check, grade, currentPosition.x, currentPosition.y - offset);
+
+
+            //Pega Vizinhos da Diagonal - {(x+1,y+1),(x+1, y-1),(x-1, y+1),(x-1, y-1)
+            if (horizontal)
+            {
+                FindNeighborNode(check, grade, currentPosition.x + offset, currentPosition.y + offset);
+                FindNeighborNode(check, grade, currentPosition.x + offset, currentPosition.y - offset);
+                FindNeighborNode(check, grade, currentPosition.x - offset, currentPosition.y +  offset);
+                FindNeighborNode(check, grade, currentPosition.x - offset, currentPosition.y - offset);
+            }
+        }
+    }
     static void FindNeighbor(WayPoint check, Transform root, float x, float y)
     {
         WayPoint child = null;
@@ -125,6 +167,28 @@ public class CreateGridPathWindowns : EditorWindow
             if (root.GetChild(i).transform.position == new Vector3(x, y, 0))
             {
                 child = root.GetChild(i).GetComponent<WayPoint>();
+
+            }
+
+        }
+        if (child != null)
+        {
+            check.neighbors.Add(child);
+        }
+
+
+    }
+    static void FindNeighborNode(Node check, Grade grade,  float x, float y)
+    {
+        Node child = null;
+        int count = grade.nodes.Count;
+        for (int i = 0; i < count; i++)
+        {
+
+            if (grade.nodes[i].position == new Vector3(x, y, 0))
+            {
+                child = new Node();
+                child = grade.nodes[i];
 
             }
 
