@@ -159,15 +159,7 @@ public class Agent2D_Topdown : MonoBehaviour
 
             STATE = IAState.WALK;
         }
-        //Girando Agente
-        if (nextWayPoint.x > currentWaypointPosition.x + 0.5f)
-        {
-            GetComponent<SpriteRenderer>().flipX = false;
-        }
-        else if (nextWayPoint.x < currentWaypointPosition.x - 0.5f)
-        {
-            GetComponent<SpriteRenderer>().flipX = true;
-        }
+       
         if (currentFrequency > frequencyPerWayPoints)
         {
             Search();
