@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
-
+using System.Collections.Generic;
 public class MyWindows : EditorWindow
 {
     string myString = "Hello World";
@@ -14,6 +14,7 @@ public class MyWindows : EditorWindow
     {
         GameObject newPath = new GameObject();
         newPath.name = "PATH_ROOT";
+      
         GameObject way = new GameObject();
         way.name = "WayPoint";
         way.tag = "Waypoint";
@@ -65,9 +66,10 @@ public class CreateGridPathWindowns : EditorWindow
     {
         GameObject newGrade = new GameObject();
         newGrade.name = name;
+        newGrade.tag = "GRID_PATH";
         newGrade.AddComponent<Grade>();
         Grade grade = newGrade.GetComponent<Grade>();
-       
+        grade.nodes = new List<Node>();
         for (int x = 0; x < whith; x++)
         {
             for (int y = 0; y < heigth; y++)
@@ -88,14 +90,7 @@ public class CreateGridPathWindowns : EditorWindow
         Node node = new Node();
         node.position = position;
         return node;
-        //grade.nodes.Add(node);
-       // way.name = "Node";
-       // way.tag = "Node";
-        //way.transform.SetParent(parent.transform);
-        //way.AddComponent<WayPoint>();
-        //way.AddComponent<WayPointFunction>();
-       // way.transform.position = position;
-        //way.transform.name = position.x.ToString() + " " + position.y.ToString();
+       
     }
     static void CreateWayPoint(GameObject parent, Vector3 position)
     {

@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Waypoint
+  - GRID_PATH
   layers:
   - Default
   - TransparentFX
@@ -14,7 +15,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - Tile Collider
   - 
   - 
   - 

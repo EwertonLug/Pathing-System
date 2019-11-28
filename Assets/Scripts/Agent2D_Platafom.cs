@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 //http://www.trickyfast.com/2017/09/21/building-a-waypoint-pathing-system-in-unity/
 //https://gamedev.stackexchange.com/questions/118912/how-can-i-adapt-a-pathfinding-to-work-with-platformers
-public enum IAState
+
+
+public class Agent2D_Platafom : MonoBehaviour
+{
+    public enum IAState
 {
     JUMP,
     DROP,
@@ -11,9 +15,6 @@ public enum IAState
     IDLE
 }
 
-
-public class PathManager : MonoBehaviour
-{
     public float walkSpeed = 5.0f;
     public float jumpForce = 5f;
 
