@@ -35,7 +35,10 @@ public class MyWindows : EditorWindow
         SelectionCreate ways = new SelectionCreate();
         ways.Join();
     }
+  
+    
 }
+
 public class CreateGridPathWindowns : EditorWindow
 {
     static string name = "GRADE_PATH";
