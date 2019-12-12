@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 public class Grade : MonoBehaviour
 {
 
-    public List<Node> nodes;
+    [HideInInspector]  public List<Node> nodes;
     public bool draw = true;
     public Tilemap TileColliderMap;
    

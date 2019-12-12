@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
-public class Node: ScriptableObject 
+
+public class Node : ScriptableObject
 {
     public Vector3 position;
     public List<Node> neighbors = new List<Node>();

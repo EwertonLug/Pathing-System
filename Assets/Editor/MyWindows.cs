@@ -85,7 +85,7 @@ public class CreateGridPathWindowns : EditorWindow
                 
             }
         }
-        FillNeighborsNode(grade);
+       FillNeighborsNode(grade);
     }
     static Node CreateNode(Vector3 position)
     {
