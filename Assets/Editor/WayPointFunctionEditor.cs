@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-
+using System.Reflection;
+using System;
 [CustomEditor(typeof(WayPointFunction))]
 public class WayPointFunctionEditor : Editor
 {
@@ -14,8 +15,29 @@ public class WayPointFunctionEditor : Editor
         WayPointFunction myScript = (WayPointFunction)target;
         if (GUILayout.Button("Create Neighbor "))
         {
-            myScript.CreateNeighbor();
+            var way = myScript.CreateNeighbor();
+            Selection.SetActiveObjectWithContext(way, null);
+            AssignLabel(way);
         }
+    }
+    /**
+        sv_label_0
+        sv_label_1
+        sv_label_2
+        sv_label_3
+        sv_label_5
+        sv_label_6
+        sv_label_7
+        sv_icon_none
+        sv_icon_dot14_pix16_gizmo
+    */
+    public static void AssignLabel(GameObject g)
+    {
+        Texture2D tex = EditorGUIUtility.IconContent("sv_icon_dot12_pix16_gizmo").image as Texture2D;
+        Type editorGUIUtilityType = typeof(EditorGUIUtility);
+        BindingFlags bindingFlags = BindingFlags.InvokeMethod | BindingFlags.Static | BindingFlags.NonPublic;
+        object[] args = new object[] { g, tex };
+        editorGUIUtilityType.InvokeMember("SetIconForObject", bindingFlags, null, null, args);
     }
     void OnSceneGUI()
     {
@@ -25,8 +47,8 @@ public class WayPointFunctionEditor : Editor
         style.normal.textColor = Color.white;
         style.fontStyle = FontStyle.Bold;
         Handles.Label(myScript.transform.position, "Selected", style);
-       
-     
+
+
 
     }
     [DrawGizmo(GizmoType.NonSelected)]
@@ -74,6 +96,6 @@ public class WayPointFunctionEditor : Editor
 
 
     }
-   
+
 
 }
