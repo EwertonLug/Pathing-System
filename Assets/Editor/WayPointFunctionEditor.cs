@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Reflection;
 using System;
+
 [CustomEditor(typeof(WayPointFunction))]
 public class WayPointFunctionEditor : Editor
 {
@@ -20,6 +21,7 @@ public class WayPointFunctionEditor : Editor
             AssignLabel(way);
         }
     }
+
     /**
         sv_label_0
         sv_label_1
@@ -46,7 +48,19 @@ public class WayPointFunctionEditor : Editor
         GUIStyle style = new GUIStyle();
         style.normal.textColor = Color.white;
         style.fontStyle = FontStyle.Bold;
+
         Handles.Label(myScript.transform.position, "Selected", style);
+
+        GUILayout.BeginArea(new Rect(10, 10, 150, 100), "Waypoints Functions");
+        GUILayout.Label(" Waypoints Functions", style);
+        if (GUILayout.Button("Create Neighbor", GUILayout.Width(120), GUILayout.Height(20)))
+        {
+            var way = myScript.CreateNeighbor();
+            Selection.SetActiveObjectWithContext(way, null);
+            AssignLabel(way);
+        }
+
+        GUILayout.EndArea();
 
 
 
