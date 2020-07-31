@@ -35,7 +35,10 @@ public class MyWindows : EditorWindow
         SelectionCreate ways = new SelectionCreate();
         ways.Join();
     }
+  
+    
 }
+
 public class CreateGridPathWindowns : EditorWindow
 {
     static string name = "GRADE_PATH";
@@ -82,7 +85,7 @@ public class CreateGridPathWindowns : EditorWindow
                 
             }
         }
-        FillNeighborsNode(grade);
+       FillNeighborsNode(grade);
     }
     static Node CreateNode(Vector3 position)
     {

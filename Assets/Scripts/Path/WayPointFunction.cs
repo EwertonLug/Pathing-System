@@ -7,7 +7,7 @@ public class WayPointFunction : MonoBehaviour
   
     // Start is called before the first frame update
  
-    public void CreateNeighbor(){
+    public GameObject CreateNeighbor(){
         var wayBase = this.GetComponent<WayPoint>();
         GameObject way = new GameObject();
         way.name = "WayPoint";
@@ -22,6 +22,7 @@ public class WayPointFunction : MonoBehaviour
         //Adicionando WayPoint atual ao Vizinho Criado
         way.GetComponent<WayPoint>().neighbors.Add(wayBase);
         
+        return way;
     }
     /**
 	 * Alterar o estado do WayPoint para Ou passavél OU Não passável
