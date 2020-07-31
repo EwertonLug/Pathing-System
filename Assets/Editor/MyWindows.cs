@@ -21,6 +21,7 @@ public class MyWindows : EditorWindow
         way.transform.SetParent(newPath.transform);
         way.AddComponent<WayPoint>();
         way.AddComponent<WayPointFunction>();
+        newPath.transform.SetAsFirstSibling();
     }
     [MenuItem("Window/Path System/Create Grade Path")]
     static void CreateGridPath()

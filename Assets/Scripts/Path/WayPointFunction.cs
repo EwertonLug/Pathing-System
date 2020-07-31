@@ -21,7 +21,7 @@ public class WayPointFunction : MonoBehaviour
         wayBase.neighbors.Add(way.GetComponent<WayPoint>());
         //Adicionando WayPoint atual ao Vizinho Criado
         way.GetComponent<WayPoint>().neighbors.Add(wayBase);
-        
+       
         return way;
     }
     /**
@@ -50,6 +50,9 @@ public class WayPointFunction : MonoBehaviour
 			}
 		}
 	}
+    public void WalkableChange() {
+        GetComponent<WayPoint>().isWalkable = !GetComponent<WayPoint>().isWalkable;
+    }
     public string GetState(){
         var state = this.GetComponent<WayPoint>().isWalkable;
         return state == true ? "": "Block";

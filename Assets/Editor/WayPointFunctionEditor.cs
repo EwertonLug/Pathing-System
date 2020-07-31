@@ -6,6 +6,7 @@ using System.Reflection;
 using System;
 
 [CustomEditor(typeof(WayPointFunction))]
+[CanEditMultipleObjects]
 public class WayPointFunctionEditor : Editor
 {
 
@@ -59,6 +60,11 @@ public class WayPointFunctionEditor : Editor
             Selection.SetActiveObjectWithContext(way, null);
             AssignLabel(way);
         }
+        if (GUILayout.Button("Is Walkable", GUILayout.Width(120), GUILayout.Height(20)))
+        {
+           myScript.WalkableChange();
+            
+        }
 
         GUILayout.EndArea();
 
@@ -84,18 +90,19 @@ public class WayPointFunctionEditor : Editor
                 Handles.DrawSolidDisc(neighbor.transform.position, neighbor.transform.forward, 0.1f);
             }
         }
+        var wayPoint = way.GetComponent<WayPoint>();
 
-
-
+        if (!wayPoint.isWalkable)
+        {
+            Handles.color = new Color(1, 0, 0, 0.1f);
+            Handles.DrawSolidDisc(way.transform.position, way.transform.forward, 0.6f);
+        }
     }
     [DrawGizmo(GizmoType.Selected)]
     static void OnDrawGizmoSelected(WayPointFunction way, GizmoType gizmoType)
     {
         var neighbors = way.GetComponent<WayPoint>().neighbors;
-        Handles.color = Color.green;
-        Handles.DrawSolidDisc(way.transform.position, way.transform.forward, 0.2f);
-        Handles.color = Color.blue;
-        Handles.DrawSolidDisc(way.transform.position, way.transform.forward, 0.1f);
+
 
         foreach (var neighbor in neighbors)
         {
@@ -106,6 +113,19 @@ public class WayPointFunctionEditor : Editor
                 Handles.DrawLine(way.transform.position, neighbor.transform.position);
                 Handles.DrawSolidDisc(neighbor.transform.position, neighbor.transform.forward, 0.2f);
             }
+        }
+        var wayPoint = way.GetComponent<WayPoint>();
+        if (wayPoint.isWalkable)
+        {
+            Handles.color = Color.green;
+            Handles.DrawSolidDisc(way.transform.position, way.transform.forward, 0.2f);
+            Handles.color = Color.blue;
+            Handles.DrawSolidDisc(way.transform.position, way.transform.forward, 0.1f);
+        }
+        else {
+
+            Handles.color = new Color(1, 0, 0, 0.1f);
+            Handles.DrawSolidDisc(way.transform.position, way.transform.forward, 0.6f);
         }
 
 
