@@ -11097,7 +11097,7 @@ MonoBehaviour:
   - {fileID: 2105326322}
   - {fileID: 1487243791}
   - {fileID: 313095070}
-  draw: 0
+  draw: 1
   TileColliderMap: {fileID: 603178534}
 --- !u!4 &1286482013
 Transform:
