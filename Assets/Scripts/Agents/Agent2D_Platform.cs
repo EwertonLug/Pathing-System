@@ -1,124 +1,183 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class Agent2D_Platform : Agent2D
+using PathSystem2D.Base;
+namespace PathSystem2D
 {
-    public enum AgentStates_Platform
+    public class Agent2D_Platform : Agent2D
     {
-        JUMP,
-        DROP,
-        WALK,
-        IDLE
+        [Header("Agent2d Platform cofigs")]
+        public float bizierMoveSpeed = 3f;
+        public List<Vector3> bizierCurve;
+        private GameObject[] waypoints;
+        [Header("Limiter JUMP | DROP")]
+        public float jumpLimiter = 2f;
+        public float dropLimiter = 2f;
+        private void Start()
+        {
+            waypoints = GameObject.FindGameObjectsWithTag("Waypoint");
+            Search();
+        }
+
+        new void FixedUpdate()
+        {
+            base.FixedUpdate();
+            DebugCurve();
+        }
+        protected override void Search()
+        {
+
+            Stop();
+            if (!pause)
+            {
+                NavigateToWaypoints(target.position);
+                Debug.Log("Nova Busca ininicada!");
+            }
+        }
+
+        private void NavigateToWaypoints(Vector3 destination)
+        {
+            CurrentPath = new Stack<Vector3>();
+
+
+            var currentNode = FindClosestWaypoint(transformAgent.parent.position);
+            var endNode = FindClosestWaypoint(destination);
+
+
+            if (currentNode == null || endNode == null || currentNode == endNode)
+                return;
+            var openList = new SortedList<float, WayPoint>();
+            var closedList = new List<WayPoint>();
+            openList.Add(0, currentNode);
+            currentNode.previous = null;
+            currentNode.distance = 0f;
+            while (openList.Count > 0)
+            {
+                currentNode = openList.Values[0];
+                openList.RemoveAt(0);
+                var dist = currentNode.distance;
+                closedList.Add(currentNode);
+                if (currentNode == endNode)
+                {
+                    break;
+                }
+                foreach (var neighbor in currentNode.neighbors)
+                {
+
+                    if (closedList.Contains(neighbor) || openList.ContainsValue(neighbor))
+                        continue;
+
+                    if (neighbor == null || neighbor.isWalkable == false) { continue; }
+                    neighbor.previous = currentNode;
+                    neighbor.distance = dist + (neighbor.transform.position - currentNode.transform.position).magnitude;
+                    var distanceToTarget = (neighbor.transform.position - endNode.transform.position).magnitude;
+
+
+
+                    if (!openList.ContainsKey(neighbor.distance + distanceToTarget))
+                    {
+                        openList.Add(neighbor.distance + distanceToTarget, neighbor);
+                    }
+
+
+                }
+            }
+            if (currentNode == endNode)
+            {
+                while (currentNode.previous != null)
+                {
+                    CurrentPath.Push(currentNode.transform.position);
+                    currentNode = currentNode.previous;
+                }
+                CurrentPath.Push(transformAgent.parent.position);
+            }
+
+        }
+        private WayPoint FindClosestWaypoint(Vector3 target)
+        {
+            GameObject closest = null;
+            float closestDist = Mathf.Infinity;
+            foreach (var waypoint in waypoints)
+            {
+                var dist = (waypoint.transform.position - target).magnitude;
+                if (dist < closestDist)
+                {
+                    closest = waypoint;
+                    closestDist = dist;
+                }
+            }
+            if (closest != null)
+            {
+                return closest.GetComponent<WayPoint>();
+            }
+            return null;
+        }
+        protected Vector3 curretBizzerPosition;
+        public IEnumerator WalkCurve()
+        {
+
+            while (true)
+            {
+
+
+                for (int i = 0; i < bizierCurve.Count; i++)
+                {
+
+                    yield return new WaitForSeconds(bizierMoveSpeed / 100);
+                    if (bizierCurve.Count > 0)
+                    {
+                        transform.parent.position = bizierCurve[i];
+                        curretBizzerPosition = bizierCurve[i];
+                    }
+
+                }
+                if (bizierCurve.Count > 0)
+                {
+                    if (curretBizzerPosition == bizierCurve[bizierCurve.Count - 1])
+                    {
+                        bizierCurve.Clear();
+                        pause = false;
+                        CurrentWaypointPosition = curretBizzerPosition;
+                        MoveTimeTotal = 0;
+                        MoveTimeCurrent = 0;
+                        StopCoroutine(WalkCurve());
+
+                    }
+                }
+                yield return null;
+            }
+
+        }
+        public List<Vector3> BizierCurve(Vector3 current, Vector3 middle, Vector3 next, float numberOfPoints)
+        {
+            List<Vector3> path = new List<Vector3>();
+
+            // set points of quadratic Bezier curve
+            Vector3 p0 = current;
+            Vector3 p1 = middle;
+            Vector3 p2 = next;
+            float t;
+            Vector3 position;
+            for (int i = 0; i < numberOfPoints; i++)
+            {
+                t = i / (numberOfPoints - 1.0f);
+                position = (1.0f - t) * (1.0f - t) * p0
+                + 2.0f * (1.0f - t) * t * p1 + t * t * p2;
+
+                path.Add(position);
+            }
+            return path;
+        }
+        public void DebugCurve()
+        {
+            //Debug
+            for (int i = 1; i < bizierCurve.Count; i++)
+            {
+                Debug.DrawLine(bizierCurve.ToArray()[i - 1], bizierCurve.ToArray()[i]);//Direção
+
+
+            }
+        }
+
     }
-    [Header("Agent2d Platform cofigs")]
-    public AgentStates_Platform STATE;
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    protected override void UpdateStates()
-    {
-        if (NextWayPoint.y > CurrentWaypointPosition.y + 0.5f)
-        {
-            OnJump();
-        }
-        else if (NextWayPoint.y < CurrentWaypointPosition.y - 0.5f)
-        {
-            OnDrop();
-        }
-        else if (NextWayPoint == CurrentWaypointPosition)
-        {
-
-            OnIdle();
-        }
-        else
-        {
-            OnMove();
-
-        }
-        //Girando Agente
-        if (NextWayPoint.x > CurrentWaypointPosition.x + 0.5f)
-        {
-            GetComponent<SpriteRenderer>().flipX = false;
-        }
-        else if (NextWayPoint.x < CurrentWaypointPosition.x - 0.5f)
-        {
-            GetComponent<SpriteRenderer>().flipX = true;
-        }
-    }
-    protected override void OnChangeStates()
-    {
-
-        switch (STATE)
-        {
-            case AgentStates_Platform.WALK:
-                GetComponent<Animator>().Play("enemy-walk");
-                jump = 0;
-                drop = 0;
-                break;
-            case AgentStates_Platform.JUMP:
-                GetComponent<Animator>().Play("enemy-jump-in");
-                drop = 0;
-
-                break;
-            case AgentStates_Platform.DROP:
-                GetComponent<Animator>().Play("enemy-jump-out");
-                jump = 0;
-
-                break;
-            case AgentStates_Platform.IDLE:
-                GetComponent<Animator>().Play("enemy-idle");
-                jump = 0;
-                drop = 0;
-                break;
-        }
-    }
-    protected override void OnIdle()
-    {
-        STATE = AgentStates_Platform.IDLE;
-    }
-    protected override void OnMove()
-    {
-        STATE = AgentStates_Platform.WALK;
-        transform.parent.position = Vector3.Lerp(CurrentWaypointPosition, CurrentPath.Peek(), MoveTimeCurrent / MoveTimeTotal);
-        Debug.DrawLine(transform.parent.position, CurrentPath.Peek());//Direção
-    }
-    int jump = 0;
-    protected override void OnJump()
-    {
-        STATE = AgentStates_Platform.JUMP;
-
-        if (jump == 0)
-        {
-            bizierCurve.Clear();
-
-            bizierCurve = BizierCurve(CurrentWaypointPosition, new Vector3(CurrentWaypointPosition.x, CurrentWaypointPosition.y + 10, 0), NextWayPoint, 20);
-
-            pause = true;
-            jump++;
-            StartCoroutine(WalkCurve());
-
-        }
-    }
-    int drop = 0;
-    protected override void OnDrop()
-    {
-        STATE = AgentStates_Platform.DROP;
-
-        if (drop == 0)
-        {
-            bizierCurve.Clear();
-            float distance = Vector3.Distance(CurrentWaypointPosition, NextWayPoint);
-            bizierCurve = BizierCurve(CurrentWaypointPosition, new Vector3(CurrentWaypointPosition.x, NextWayPoint.y + distance * 2, 0), NextWayPoint, 20);
-
-            drop++;
-            pause = true;
-            StartCoroutine(WalkCurve());
-
-        }
-    }
-
 }

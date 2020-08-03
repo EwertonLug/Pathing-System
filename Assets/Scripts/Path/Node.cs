@@ -2,23 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
-public class Node : ScriptableObject
+namespace PathSystem2D.Base
 {
-    public Vector3 position;
-    public List<Node> neighbors = new List<Node>();
-    public bool isWalkable = true;
-    
-       public Node previous
+    public class Node : ScriptableObject
     {
-        get;
-        set;
-    }
+        public Vector3 position;
+        public List<Node> neighbors = new List<Node>();
+        public bool isWalkable = true;
 
-    public float distance
-    {
-        get;
-        set;
+        public Node previous
+        {
+            get;
+            set;
+        }
+
+        public float distance
+        {
+            get;
+            set;
+        }
     }
 }
 

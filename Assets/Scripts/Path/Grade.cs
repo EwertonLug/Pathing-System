@@ -2,74 +2,79 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-public class Grade : MonoBehaviour
+
+namespace PathSystem2D.Base
 {
-
-    [HideInInspector]  public List<Node> nodes;
-    public bool draw = true;
-    public Tilemap TileColliderMap;
-   
-    void Awake()
+    public class Grade : MonoBehaviour
     {
-        Tilemap tilemap = TileColliderMap;
-        BoundsInt bounds = tilemap.cellBounds;
-        TileBase[] allTiles = tilemap.GetTilesBlock(bounds);
 
-        for (int x = 0; x < bounds.size.x; x++)
+        [HideInInspector] public List<Node> nodes;
+        public bool draw = true;
+        public Tilemap TileColliderMap;
+
+        void Awake()
         {
-            for (int y = 0; y < bounds.size.y; y++)
-            {
-                TileBase tile = allTiles[x + y * bounds.size.x];
-                if (tile != null)
-                {
-                    //Debug.Log("x:" + x + " y:" + y + " tile:" + tile.name);
+            Tilemap tilemap = TileColliderMap;
+            BoundsInt bounds = tilemap.cellBounds;
+            TileBase[] allTiles = tilemap.GetTilesBlock(bounds);
 
-                    foreach (var node in nodes)
+            for (int x = 0; x < bounds.size.x; x++)
+            {
+                for (int y = 0; y < bounds.size.y; y++)
+                {
+                    TileBase tile = allTiles[x + y * bounds.size.x];
+                    if (tile != null)
                     {
-                        if (node.position == new Vector3(x, y, 0))
+                        //Debug.Log("x:" + x + " y:" + y + " tile:" + tile.name);
+
+                        foreach (var node in nodes)
                         {
-                            node.isWalkable = false;
-                          
+                            if (node.position == new Vector3(x, y, 0))
+                            {
+                                node.isWalkable = false;
+
+                            }
                         }
                     }
                 }
             }
         }
-    }
-    void OnDrawGizmos()
-    {
-
-        if (draw)
+        void OnDrawGizmos()
         {
-            Gizmos.color = Color.yellow;
 
-
-            foreach (var node in nodes)
+            if (draw)
             {
-                if (node != null)
-                {
+                Gizmos.color = Color.yellow;
 
-                    if(node.isWalkable == true){
-                        Gizmos.DrawSphere(node.position, 0.2f);
-                    }
-                    
-                    foreach (var neighbor in node.neighbors)
+
+                foreach (var node in nodes)
+                {
+                    if (node != null)
                     {
-                        if (neighbor != null && neighbor.isWalkable == true && node.isWalkable == true )
+
+                        if (node.isWalkable == true)
                         {
-                            Gizmos.DrawLine(node.position, neighbor.position);
-                            
+                            Gizmos.DrawSphere(node.position, 0.2f);
                         }
 
+                        foreach (var neighbor in node.neighbors)
+                        {
+                            if (neighbor != null && neighbor.isWalkable == true && node.isWalkable == true)
+                            {
+                                Gizmos.DrawLine(node.position, neighbor.position);
+
+                            }
+
+
+                        }
 
                     }
-
                 }
             }
+
+
+
         }
 
-
-
     }
-
 }
