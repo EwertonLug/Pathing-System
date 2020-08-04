@@ -61,6 +61,7 @@ namespace PathSystem2D.Base
                 Selection.SetActiveObjectWithContext(way, null);
                 AssignLabel(way);
             }
+            
             if (GUILayout.Button("Is Walkable", GUILayout.Width(120), GUILayout.Height(20)))
             {
                 myScript.WalkableChange();

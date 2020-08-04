@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
+using System.IO;
+
 namespace PathSystem2D.Base
 {
     public class MyWindows : EditorWindow
@@ -9,9 +11,10 @@ namespace PathSystem2D.Base
         bool groupEnabled;
         bool myBool = true;
         float myFloat = 1.23f;
-
+     
+     
         // Add menu named "My Window" to the Window menu
-        [MenuItem("Window/Path System/Create Init Path")]
+        [MenuItem("Window/Path System 2D/Create Init Path")]
         private static void CreateInitPath()
         {
             GameObject newPath = new GameObject();
@@ -24,8 +27,10 @@ namespace PathSystem2D.Base
             way.AddComponent<WayPoint>();
             way.AddComponent<WayPointFunction>();
             newPath.transform.SetAsFirstSibling();
+            Selection.SetActiveObjectWithContext(way, null);
+
         }
-        [MenuItem("Window/Path System/Create Grade Path")]
+        [MenuItem("Window/Path System 2D/Create Grade Path")]
         static void CreateGridPath()
         {
             // Get existing open window or if none, make a new one:
@@ -33,11 +38,10 @@ namespace PathSystem2D.Base
             window.Show();
 
         }
-        [MenuItem("Window/Path System/Join WayPoints")]
+        [MenuItem("Window/Path System 2D/Join WayPoints __%#J")]
         static void JoinWayPoints()
         {
-            SelectionCreate ways = new SelectionCreate();
-            ways.Join();
+            SelectionCreate.Join();    
         }
 
 

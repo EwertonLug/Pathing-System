@@ -1,14 +1,17 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using System.IO;
+using System.Reflection;
 using UnityEditor;
-namespace PathSystem2D.Base
-{
-    public class SelectionCreate
+using UnityEngine;
+
+
+namespace  PathSystem2D.Base{
+    public static class SelectionCreate
     {
-
-
-        public void Join()
+        public static GameObject Path;
+        public static void Join()
         {
 
             List<WayPoint> currentSelections;
@@ -51,5 +54,19 @@ namespace PathSystem2D.Base
             }
         }
 
+        public static List<WayPoint> GetWayPointsSelected()
+        {
+            List<WayPoint> currentSelections = new List<WayPoint>();
+            foreach (Transform transform in UnityEditor.Selection.transforms)
+            {
+                //Undo.RegisterUndo(transform, transform.name + " Looks at Main Camera");
+                if (transform.gameObject.GetComponent<WayPoint>())
+                {
+                    currentSelections.Add(transform.gameObject.GetComponent<WayPoint>());
+                }
+
+            }
+            return currentSelections;
+        }
     }
 }
