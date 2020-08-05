@@ -6,13 +6,18 @@ namespace PathSystem2D
 {
     public class Agent2D_Platform : Agent2D
     {
-        [Header("Agent2d Platform cofigs")]
+        [Header("Bizier Curve Configs")]
         public float bizierMoveSpeed = 3f;
+        [Range(2f, 4f)]
+        public float bizierHeight_jump = 2f;
+        [Range(2f, 4f)]
+        public float bizierHeight_drop = 2f;
+
         public List<Vector3> bizierCurve;
         private GameObject[] waypoints;
         [Header("Limiter JUMP | DROP")]
-        public float jumpLimiter = 2f;
-        public float dropLimiter = 2f;
+        public float jumpLimiterDistance = 4f;
+        public float dropLimiterDistance = 4f;
         private void Start()
         {
             waypoints = GameObject.FindGameObjectsWithTag("Waypoint");
@@ -31,8 +36,9 @@ namespace PathSystem2D
             if (!pause)
             {
                 NavigateToWaypoints(target.position);
-                Debug.Log("Nova Busca ininicada!");
+              
             }
+
         }
 
         private void NavigateToWaypoints(Vector3 destination)
@@ -91,6 +97,7 @@ namespace PathSystem2D
                 }
                 CurrentPath.Push(transformAgent.parent.position);
             }
+            Debug.Log("Nova Busca ininicada!");
 
         }
         private WayPoint FindClosestWaypoint(Vector3 target)

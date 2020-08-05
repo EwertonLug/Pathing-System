@@ -20,7 +20,7 @@ namespace PathSystem2D.Base
             way.AddComponent<WayPointFunction>();
             //Adicionando Vizinho ao WayPoint Atual
             Debug.Log(wayBase.neighbors.Count);
-            wayBase.neighbors.Add(way.GetComponent<WayPoint>());
+            wayBase.neighbors.Add(way.GetComponent<WayPoint>()); 
             //Adicionando WayPoint atual ao Vizinho Criado
             way.GetComponent<WayPoint>().neighbors.Add(wayBase);
 

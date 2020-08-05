@@ -16,7 +16,13 @@ public class AIPlatform2D : MonoBehaviour
     private Agent2D_Platform agent;
     public Transform target;
     public AgentStates_Platform STATE;
-   
+
+    [Header("Animations Names")]
+    public string jumName;
+    public string dropName;
+    public string walkName;
+    public string idleName;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -25,7 +31,7 @@ public class AIPlatform2D : MonoBehaviour
         agent.Register(transform);
         agent.SetTarget(target);
         agent.StartSearch();
-       
+
     }
 
     // Update is called once per frame
@@ -36,13 +42,13 @@ public class AIPlatform2D : MonoBehaviour
     }
     protected void UpdateStates()
     {
-        
-        
-        if (agent.NextWayPoint.y > agent.CurrentWaypointPosition.y + 0.5f)
+
+        float distance = Vector3.Distance(agent.CurrentWaypointPosition, agent.NextWayPoint);
+        if ((agent.NextWayPoint.y > agent.CurrentWaypointPosition.y + 0.5f) && distance < agent.jumpLimiterDistance)
         {
             OnJump();
         }
-        else if (agent.NextWayPoint.y < agent.CurrentWaypointPosition.y - 0.5f)
+        else if ((agent.NextWayPoint.y < agent.CurrentWaypointPosition.y - 0.5f) && distance < agent.dropLimiterDistance)
         {
             OnDrop();
         }
@@ -65,8 +71,8 @@ public class AIPlatform2D : MonoBehaviour
         {
             GetComponent<SpriteRenderer>().flipX = true;
         }
-       
-           
+
+
 
     }
     protected void OnChangeStates()
@@ -75,22 +81,26 @@ public class AIPlatform2D : MonoBehaviour
         switch (STATE)
         {
             case AgentStates_Platform.WALK:
-                GetComponent<Animator>().Play("enemy-walk");
+                if (GetComponent<Animator>())
+                    GetComponent<Animator>().Play(walkName);
                 jump = 0;
                 drop = 0;
                 break;
             case AgentStates_Platform.JUMP:
-                GetComponent<Animator>().Play("enemy-jump-in");
+                if (GetComponent<Animator>())
+                    GetComponent<Animator>().Play(jumName);
                 drop = 0;
 
                 break;
             case AgentStates_Platform.DROP:
-                GetComponent<Animator>().Play("enemy-jump-out");
+                if (GetComponent<Animator>())
+                    GetComponent<Animator>().Play(dropName);
                 jump = 0;
 
                 break;
             case AgentStates_Platform.IDLE:
-                GetComponent<Animator>().Play("enemy-idle");
+                if (GetComponent<Animator>())
+                    GetComponent<Animator>().Play(idleName);
                 jump = 0;
                 drop = 0;
                 break;
@@ -114,8 +124,8 @@ public class AIPlatform2D : MonoBehaviour
         if (jump == 0)
         {
             agent.bizierCurve.Clear();
-
-            agent.bizierCurve = agent.BizierCurve(agent.CurrentWaypointPosition, new Vector3(agent.CurrentWaypointPosition.x, agent.CurrentWaypointPosition.y + 10, 0), agent.NextWayPoint, 20);
+            float distance = Vector3.Distance(agent.CurrentWaypointPosition, agent.NextWayPoint);
+            agent.bizierCurve = agent.BizierCurve(agent.CurrentWaypointPosition, new Vector3(agent.CurrentWaypointPosition.x, agent.CurrentWaypointPosition.y + distance * agent.bizierHeight_jump, 0), agent.NextWayPoint, 20);
 
             agent.pause = true;
             jump++;
@@ -132,7 +142,7 @@ public class AIPlatform2D : MonoBehaviour
         {
             agent.bizierCurve.Clear();
             float distance = Vector3.Distance(agent.CurrentWaypointPosition, agent.NextWayPoint);
-            agent.bizierCurve = agent.BizierCurve(agent.CurrentWaypointPosition, new Vector3(agent.CurrentWaypointPosition.x, agent.NextWayPoint.y + distance * 2, 0), agent.NextWayPoint, 20);
+            agent.bizierCurve = agent.BizierCurve(agent.CurrentWaypointPosition, new Vector3(agent.CurrentWaypointPosition.x, agent.NextWayPoint.y + distance * agent.bizierHeight_drop, 0), agent.NextWayPoint, 20);
 
             drop++;
             agent.pause = true;

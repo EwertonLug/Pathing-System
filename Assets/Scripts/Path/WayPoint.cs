@@ -8,6 +8,7 @@ namespace PathSystem2D.Base
     {
         public List<WayPoint> neighbors = new List<WayPoint>();
         public bool isWalkable = true;
+        public bool isSkipped = true;
         public WayPoint previous
         {
             get;
