@@ -23,9 +23,12 @@ namespace PathSystem2D
         private float moveTimeCurrent;
         protected Transform target;
 
+
         public int frequencyPerWayPoints = 2;
         int currentFrequency = 0;
-
+        //Recebe o tempo para fazer uma nova busca enquanto parado.
+        public float timeToNewSearchIdle = 1f;
+        protected float currentTimeToNewSearchIdle = 0f;
         public bool pause = false;
 
         protected Transform transformAgent;
@@ -50,7 +53,7 @@ namespace PathSystem2D
         }
 
 
-        protected void Stop()
+        protected void Reset()
         {
             CurrentPath = null;
             MoveTimeTotal = 0;
@@ -82,7 +85,7 @@ namespace PathSystem2D
                         CurrentWaypointPosition = CurrentPath.Pop();
                         if (CurrentPath.Count == 0)
                         {
-                            Stop();
+                            Reset();
 
                         }
                         else
@@ -99,13 +102,15 @@ namespace PathSystem2D
                     currentFrequency = 3;
 
                 }
-            }//Fim PAUSE
 
+            }//Fim PAUSE
+            //Faz a busca a cada 2 waypoints
             if (currentFrequency > frequencyPerWayPoints)
             {
                 Search();
                 currentFrequency = 0;
             }
+           
 
         }
         public bool isFoundTarget()

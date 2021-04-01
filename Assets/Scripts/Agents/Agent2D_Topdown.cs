@@ -15,16 +15,30 @@ namespace PathSystem2D
         }
         protected override void Search()
         {
-            Debug.Log("Nova Busca ininicada!");
-            Stop();
+           
             if (!pause)
             {
-                NavigateToNode(target.position);
+                if (this.isFoundTarget())
+                {
+                    currentTimeToNewSearchIdle += Time.deltaTime;
+                    if (currentTimeToNewSearchIdle > timeToNewSearchIdle)
+                    {
+                        NavigateToNode(target.position);
+                        currentTimeToNewSearchIdle = 0;
+                    }
+                }
+                else
+                {
+                    NavigateToNode(target.position);
+                }
             }
+
         }
 
         private void NavigateToNode(Vector3 destination)
         {
+            Debug.Log("Start new Search...!");
+            Reset();
             currentPath = new Stack<Vector3>();
             var currentNode = FindClosestNode(transformAgent.parent.position);
             var endNode = FindClosestNode(destination);

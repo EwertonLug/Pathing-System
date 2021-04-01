@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using PathSystem2D.Base;
+using System.Threading;
+
 namespace PathSystem2D
 {
     public class Agent2D_Platform : Agent2D
@@ -30,19 +32,32 @@ namespace PathSystem2D
             DebugCurve();
         }
         protected override void Search()
-        {
-
-            Stop();
+        { 
             if (!pause)
             {
-                NavigateToWaypoints(target.position);
-              
-            }
+               
 
+                if (this.isFoundTarget())
+                {
+                    currentTimeToNewSearchIdle += Time.deltaTime;
+                    if (currentTimeToNewSearchIdle > timeToNewSearchIdle)
+                    {
+                        NavigateToWaypoints(target.position);
+                        currentTimeToNewSearchIdle = 0;
+                    }
+                }
+                else
+                {
+                    NavigateToWaypoints(target.position);
+                }
+                
+            }
         }
 
         private void NavigateToWaypoints(Vector3 destination)
         {
+            Debug.Log("Start new Search...!");
+            Reset();
             CurrentPath = new Stack<Vector3>();
 
 
@@ -97,7 +112,7 @@ namespace PathSystem2D
                 }
                 CurrentPath.Push(transformAgent.parent.position);
             }
-            Debug.Log("Nova Busca ininicada!");
+            
 
         }
         private WayPoint FindClosestWaypoint(Vector3 target)
